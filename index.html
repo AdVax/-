@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#0d1117"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="مخطط AdVax"/>
+<link rel="manifest" href="manifest.json"/>
+<title>مخطط AdVax v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117; --bg-card:#161b22; --bg-el:#1c2128; --bg-hov:#21262d;
+  --bdr:#30363d; --bdr-l:#21262d;
+  --tx:#e6edf3; --tx2:#8b949e; --txm:#484f58;
+  --accent:#00d9a6; --ac-dim:#00d9a615; --ac-hov:#00f0b8;
+  --red:#f85149; --red-dim:#f8514920;
+  --yel:#f0a84e; --yel-dim:#f0a84e20;
+  --blue:#58a6ff; --blue-dim:#58a6ff15;
+  --pur:#bc8cff; --pur-dim:#bc8cff15;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+  --sh:0 4px 24px rgba(0,0,0,.4);
+  --font:'IBM Plex Sans Arabic',sans-serif;
+  --mono:'Space Mono',monospace;
+  --nav:64px; --bot:70px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:99px}
+
+/* ===== LAYOUT ===== */
+#app{display:flex;flex-direction:column;min-height:100dvh}
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav);
+  background:rgba(13,17,23,.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bdr-l);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:8px;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{
+  width:36px;height:36px;border-radius:var(--r-sm);
+  background:linear-gradient(135deg,var(--accent),#0088ff);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;color:#0d1117;
+}
+.brand-name{font-size:16px;font-weight:700}
+.brand-sub{font-size:10px;color:var(--txm)}
+.h-actions{display:flex;gap:6px}
+.btn-icon{
+  width:34px;height:34px;background:var(--bg-el);border:1px solid var(--bdr);
+  border-radius:var(--r-sm);color:var(--tx2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  transition:all .15s;
+}
+.btn-icon:hover{background:var(--bg-hov);color:var(--tx)}
+
+main{
+  padding-top:calc(var(--nav) + 16px);
+  padding-bottom:calc(var(--bot) + 16px);
+  padding-inline:16px;max-width:680px;margin:0 auto;width:100%;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  height:var(--bot);background:rgba(22,27,34,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--bdr-l);
+  display:flex;align-items:center;padding:0 8px;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:6px;cursor:pointer;border-radius:var(--r-md);
+  transition:all .2s;color:var(--txm);border:none;background:none;font-family:var(--font);
+}
+.nav-item:hover{color:var(--tx2);background:var(--bg-el)}
+.nav-item.active{color:var(--accent)}
+.nav-item .ni{font-size:20px;transition:transform .2s}
+.nav-item.active .ni{transform:scale(1.15)}
+.nav-item .nl{font-size:10px;font-weight:500}
+.nav-badge{
+  position:relative;
+}
+.nav-badge::after{
+  content:attr(data-count);
+  position:absolute;top:-4px;left:-4px;
+  background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);
+}
+.nav-badge[data-count="0"]::after{display:none}
+
+/* ===== PAGES ===== */
+.page{display:none;animation:fadeUp .25s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== PAGE HEADER ===== */
+.pg-hdr{margin-bottom:18px;display:flex;align-items:flex-end;justify-content:space-between}
+.pg-title{font-size:24px;font-weight:700;line-height:1}
+.pg-sub{font-size:12px;color:var(--txm);margin-top:3px}
+.pg-count{font-family:var(--mono);font-size:12px;color:var(--txm)}
+
+/* ===== CARDS ===== */
+.card{background:var(--bg-card);border:1px solid var(--bdr-l);border-radius:var(--r-lg);padding:16px;transition:border-color .2s}
+.card:hover{border-color:var(--bdr)}
+
+/* ===== STAT GRID ===== */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat-card{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-lg);padding:14px;position:relative;overflow:hidden;
+}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:50px;height:50px;border-radius:0 var(--r-lg) 0 100%;opacity:.1}
+.stat-card.g::before{background:var(--accent)} .stat-card.b::before{background:var(--blue)}
+.stat-card.o::before{background:var(--yel)} .stat-card.p::before{background:var(--pur)}
+.s-icon{font-size:20px;margin-bottom:6px}
+.s-num{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1}
+.stat-card.g .s-num{color:var(--accent)} .stat-card.b .s-num{color:var(--blue)}
+.stat-card.o .s-num{color:var(--yel)} .stat-card.p .s-num{color:var(--pur)}
+.s-lbl{font-size:11px;color:var(--txm);margin-top:3px}
+
+/* ===== RING CHART ===== */
+.ring-wrap{
+  display:flex;align-items:center;gap:16px;
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-lg);padding:16px;margin-bottom:18px;
+}
+.ring-info{flex:1}
+.ring-title{font-size:14px;font-weight:600;color:var(--tx2);margin-bottom:4px}
+.ring-detail{font-size:12px;color:var(--txm);line-height:1.6}
+.ring-motive{
+  font-size:13px;font-weight:600;color:var(--accent);
+  background:var(--ac-dim);border-radius:var(--r-sm);
+  padding:4px 10px;margin-top:8px;display:inline-block;
+}
+
+/* ===== WEEK STRIP ===== */
+.week-strip-wrap{margin-bottom:18px}
+.week-label{font-size:12px;font-weight:600;color:var(--txm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.week-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.week-strip::-webkit-scrollbar{height:0}
+.week-day{
+  flex:0 0 auto;min-width:44px;background:var(--bg-card);
+  border:1px solid var(--bdr-l);border-radius:var(--r-md);
+  padding:8px 6px;text-align:center;cursor:pointer;transition:all .15s;
+}
+.week-day:hover{border-color:var(--bdr)}
+.week-day.today{border-color:var(--accent);background:var(--ac-dim)}
+.week-day.has-tasks{border-color:var(--blue)}
+.wd-name{font-size:10px;color:var(--txm);margin-bottom:4px}
+.wd-num{font-family:var(--mono);font-size:15px;font-weight:700}
+.week-day.today .wd-num{color:var(--accent)}
+.wd-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--blue);margin:4px auto 0;
+}
+.wd-dot.hidden{visibility:hidden}
+
+/* ===== FORMS ===== */
+.add-form{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-lg);padding:14px;margin-bottom:14px;
+}
+.add-form-title{font-size:13px;font-weight:600;color:var(--tx2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.form-row{display:flex;gap:8px;margin-bottom:8px}
+.form-row:last-child{margin-bottom:0}
+input[type="text"],input[type="url"],textarea,select{
+  flex:1;background:var(--bg-el);border:1px solid var(--bdr);
+  border-radius:var(--r-sm);color:var(--tx);font-family:var(--font);
+  font-size:14px;padding:9px 12px;outline:none;transition:border-color .15s;width:100%;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ac-dim)}
+textarea{resize:none;min-height:70px}
+select{cursor:pointer}
+select option{background:var(--bg-el)}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px 14px;border:none;border-radius:var(--r-sm);
+  font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:#0d1117}
+.btn-primary:hover{background:var(--ac-hov);transform:translateY(-1px)}
+.btn-ghost{background:var(--bg-el);border:1px solid var(--bdr);color:var(--tx2)}
+.btn-ghost:hover{background:var(--bg-hov);color:var(--tx)}
+.btn-danger{background:var(--red-dim);color:var(--red)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+
+/* ===== FILTER CHIPS ===== */
+.filter-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.filter-row::-webkit-scrollbar{height:0}
+.chip{
+  padding:5px 12px;background:var(--bg-el);border:1px solid var(--bdr);
+  border-radius:99px;font-size:12px;font-weight:500;color:var(--tx2);
+  cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--font);
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.active{background:var(--ac-dim);border-color:var(--accent);color:var(--accent)}
+
+/* ===== SUB TABS ===== */
+.sub-tabs{display:flex;gap:4px;background:var(--bg-el);border-radius:var(--r-lg);padding:4px;margin-bottom:16px}
+.sub-tab{
+  flex:1;padding:8px;border-radius:var(--r-md);font-size:13px;font-weight:600;
+  color:var(--txm);cursor:pointer;border:none;background:none;font-family:var(--font);
+  transition:all .2s;text-align:center;
+}
+.sub-tab.active{background:var(--bg-card);color:var(--tx);box-shadow:var(--sh)}
+
+/* ===== ITEM LIST ===== */
+.item-list{display:flex;flex-direction:column;gap:8px}
+
+/* ===== TASK ITEM ===== */
+.task-item{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-md);padding:12px;
+  display:flex;align-items:flex-start;gap:10px;transition:all .2s;
+}
+.task-item:hover{border-color:var(--bdr);background:var(--bg-el)}
+.task-item.done{opacity:.45}
+.task-item.done .task-title{text-decoration:line-through;color:var(--txm)}
+.task-check{
+  width:20px;height:20px;min-width:20px;border:2px solid var(--bdr);
+  border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;margin-top:1px;background:transparent;
+}
+.task-check:hover{border-color:var(--accent)}
+.task-item.done .task-check{background:var(--accent);border-color:var(--accent)}
+.chk-ico{display:none;color:#0d1117;font-size:10px;font-weight:900}
+.task-item.done .chk-ico{display:block}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:500;line-height:1.4}
+.task-meta{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.task-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s;align-items:flex-start}
+.task-item:hover .task-actions{opacity:1}
+
+/* ===== BADGES ===== */
+.badge{padding:2px 7px;border-radius:99px;font-size:11px;font-weight:600}
+.b-high{background:var(--red-dim);color:var(--red)}
+.b-med{background:var(--yel-dim);color:var(--yel)}
+.b-low{background:var(--ac-dim);color:var(--accent)}
+.b-cat{background:var(--blue-dim);color:var(--blue)}
+.b-pur{background:var(--pur-dim);color:var(--pur)}
+.b-date{background:var(--bg-el);color:var(--txm);border:1px solid var(--bdr)}
+.b-goal{background:var(--ac-dim);color:var(--accent)}
+
+/* ===== ACTION BUTTONS ===== */
+.act-btn{
+  width:26px;height:26px;border:none;border-radius:var(--r-sm);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:all .15s;
+}
+.edit-btn{background:var(--blue-dim);color:var(--blue)}
+.edit-btn:hover{background:var(--blue);color:#fff}
+.del-btn{background:var(--red-dim);color:var(--red)}
+.del-btn:hover{background:var(--red);color:#fff}
+.pomo-btn{background:var(--yel-dim);color:var(--yel)}
+.pomo-btn:hover{background:var(--yel);color:#0d1117}
+
+/* ===== COURSE ITEM ===== */
+.course-item{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-md);padding:14px;display:flex;align-items:center;gap:12px;
+  transition:all .2s;
+}
+.course-item:hover{border-color:var(--bdr)}
+.c-icon{width:42px;height:42px;min-width:42px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px}
+.c-body{flex:1;min-width:0}
+.c-name{font-size:14px;font-weight:600}
+.c-plat{font-size:11px;color:var(--txm);margin-top:2px}
+.c-meta{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;align-items:center}
+.s-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-left:3px}
+.s-planned{background:var(--txm)} .s-ongoing{background:var(--yel);box-shadow:0 0 0 3px var(--yel-dim)} .s-done{background:var(--accent)}
+.c-link{font-size:11px;color:var(--blue);text-decoration:none;padding:2px 7px;background:var(--blue-dim);border-radius:99px;transition:opacity .15s}
+.c-link:hover{opacity:.8}
+.prog-wrap{background:var(--bg-el);border-radius:99px;height:3px;margin-top:7px;overflow:hidden}
+.prog-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--blue));transition:width .4s ease}
+.c-actions{display:flex;flex-direction:column;gap:4px;opacity:0;transition:opacity .15s;align-items:flex-end}
+.course-item:hover .c-actions{opacity:1}
+
+/* ===== IDEA ITEM ===== */
+.idea-item{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-md);padding:14px;transition:all .2s;
+}
+.idea-item:hover{border-color:var(--bdr)}
+.idea-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.idea-title{font-size:14px;font-weight:600}
+.idea-text{font-size:13px;color:var(--tx2);line-height:1.7;white-space:pre-wrap}
+.idea-ftr{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px}
+.idea-date{font-size:10px;color:var(--txm);font-family:var(--mono)}
+.idea-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.idea-item:hover .idea-actions{opacity:1}
+.convert-btn{
+  font-size:11px;color:var(--accent);background:var(--ac-dim);
+  border:none;border-radius:99px;padding:4px 10px;cursor:pointer;
+  font-family:var(--font);font-weight:600;transition:all .15s;white-space:nowrap;
+}
+.convert-btn:hover{background:var(--accent);color:#0d1117}
+
+/* ===== GOAL ITEM ===== */
+.goal-item{
+  background:var(--bg-card);border:1px solid var(--bdr-l);
+  border-radius:var(--r-lg);padding:14px;transition:all .2s;
+}
+.goal-item:hover{border-color:var(--bdr)}
+.goal-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.goal-title{font-size:15px;font-weight:600}
+.goal-dl{font-size:10px;color:var(--txm);font-family:var(--mono);margin-top:3px}
+.goal-desc{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:7px}
+.goal-prog-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.goal-pct{font-size:12px;color:var(--txm);font-family:var(--mono);white-space:nowrap}
+input[type="range"]{
+  -webkit-appearance:none;width:100%;height:5px;
+  background:var(--bg-el);border-radius:99px;outline:none;cursor:pointer;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px var(--ac-dim);
+}
+.goal-tasks-count{font-size:11px;color:var(--txm);margin-top:6px}
+
+/* ===== ACHIEVEMENT ITEM ===== */
+.ach-item{
+  background:var(--bg-card);border:1px solid rgba(0,217,166,.15);
+  border-radius:var(--r-md);padding:12px;
+  display:flex;align-items:center;gap:12px;transition:all .2s;
+}
+.ach-item:hover{border-color:rgba(0,217,166,.3)}
+.ach-check{
+  width:32px;height:32px;min-width:32px;border-radius:50%;
+  background:var(--ac-dim);display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--accent);
+}
+.ach-body{flex:1;min-width:0}
+.ach-title{font-size:13px;font-weight:500;color:var(--tx2);text-decoration:line-through}
+.ach-date{font-size:10px;color:var(--txm);font-family:var(--mono);margin-top:2px}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:40px 20px;color:var(--txm)}
+.empty-icon{font-size:42px;margin-bottom:12px;opacity:.5}
+.empty-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--tx2)}
+.empty-sub{font-size:12px;line-height:1.6}
+
+/* ===== SECTION TITLE ===== */
+.sec-title{
+  font-size:12px;font-weight:600;color:var(--txm);text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.see-all{font-size:12px;color:var(--accent);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500}
+.sec-block{margin-bottom:20px}
+
+/* ===== QUOTE CARD ===== */
+.quote-card{
+  background:linear-gradient(135deg,rgba(0,217,166,.06),rgba(88,166,255,.06));
+  border:1px solid rgba(0,217,166,.15);border-radius:var(--r-lg);
+  padding:16px;margin-bottom:18px;
+}
+.quote-text{font-size:14px;font-weight:500;line-height:1.7;color:var(--tx)}
+.quote-author{font-size:11px;color:var(--txm);margin-top:6px}
+
+/* ===== SEARCH ===== */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-ico{position:absolute;top:50%;transform:translateY(-50%);right:11px;color:var(--txm);font-size:15px;pointer-events:none}
+.search-input{padding-right:36px!important}
+
+/* ===== TOAST ===== */
+.toast-container{
+  position:fixed;bottom:calc(var(--bot) + 14px);left:50%;transform:translateX(-50%);
+  z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 32px);max-width:400px;
+}
+.toast{
+  background:var(--bg-el);border:1px solid var(--bdr);border-radius:var(--r-md);
+  padding:10px 16px;font-size:13px;font-weight:500;color:var(--tx);
+  box-shadow:var(--sh);animation:slideUp .25s ease;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;pointer-events:all;
+}
+.toast.undo-toast{border-color:rgba(240,168,78,.4)}
+.toast-undo-btn{
+  background:var(--yel-dim);color:var(--yel);border:none;
+  border-radius:var(--r-sm);padding:4px 10px;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:var(--font);white-space:nowrap;
+}
+.toast-undo-btn:hover{background:var(--yel);color:#0d1117}
+@keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{to{opacity:0;transform:translateY(-4px)}}
+
+/* ===== MODAL ===== */
+.overlay{
+  position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);
+  backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg-card);border:1px solid var(--bdr);
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+  padding:20px 18px;padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  width:100%;max-width:680px;
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  max-height:90dvh;overflow-y:auto;
+}
+.overlay.open .modal{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:var(--bdr);border-radius:99px;margin:0 auto 16px}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:14px}
+
+/* ===== POMODORO ===== */
+.pomo-timer{
+  text-align:center;padding:20px 0;
+}
+.pomo-time{
+  font-family:var(--mono);font-size:56px;font-weight:700;
+  color:var(--tx);line-height:1;margin-bottom:8px;
+  transition:color .3s;
+}
+.pomo-time.urgent{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.pomo-task-name{font-size:13px;color:var(--txm);margin-bottom:20px;font-style:italic}
+.pomo-controls{display:flex;gap:10px;justify-content:center}
+.pomo-ring-wrap{position:relative;width:120px;height:120px;margin:0 auto 12px}
+.pomo-ring-wrap svg{transform:rotate(-90deg)}
+.pomo-ring-text{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:20px;font-weight:700;color:var(--tx);
+}
+.pomo-sessions{font-size:12px;color:var(--txm);text-align:center;margin-top:12px}
+
+/* ===== SEARCH MODAL ===== */
+.search-modal-input{
+  width:100%;background:var(--bg-el);border:1px solid var(--bdr);
+  border-radius:var(--r-md);color:var(--tx);font-family:var(--font);
+  font-size:15px;padding:12px 16px;outline:none;
+  transition:border-color .15s;margin-bottom:16px;
+}
+.search-modal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ac-dim)}
+.search-group-title{font-size:11px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.1em;margin:12px 0 6px}
+.search-result{
+  background:var(--bg-el);border:1px solid var(--bdr-l);border-radius:var(--r-sm);
+  padding:10px 12px;cursor:pointer;transition:all .15s;margin-bottom:4px;
+}
+.search-result:hover{border-color:var(--accent);background:var(--ac-dim)}
+.sr-title{font-size:13px;font-weight:500}
+.sr-sub{font-size:11px;color:var(--txm);margin-top:2px}
+.sr-type{font-size:10px;background:var(--bg-card);color:var(--txm);padding:2px 6px;border-radius:99px;float:left}
+
+/* ===== ONBOARDING ===== */
+.ob-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;
+}
+.ob-slide{display:none;animation:fadeUp .3s ease;text-align:center;max-width:360px;width:100%}
+.ob-slide.active{display:block}
+.ob-icon{font-size:64px;margin-bottom:20px}
+.ob-title{font-size:26px;font-weight:700;margin-bottom:10px;line-height:1.2}
+.ob-desc{font-size:14px;color:var(--tx2);line-height:1.8;margin-bottom:28px}
+.ob-features{text-align:right;margin-bottom:24px}
+.ob-feat{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr-l);font-size:13px}
+.ob-feat:last-child{border:none}
+.ob-feat-icon{font-size:20px;min-width:28px;text-align:center}
+.ob-dots{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--bdr);transition:all .3s}
+.ob-dot.active{background:var(--accent);width:24px;border-radius:99px}
+.ob-brand{position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:8px}
+
+/* ===== DATA WARNING ===== */
+.data-warn{
+  background:rgba(240,168,78,.08);border:1px solid rgba(240,168,78,.25);
+  border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px;
+  display:flex;align-items:flex-start;gap:10px;font-size:12px;
+}
+.data-warn-icon{font-size:18px;margin-top:1px}
+.data-warn-text{flex:1;line-height:1.6;color:var(--tx2)}
+
+/* ===== INSTALL BANNER ===== */
+.install-banner{
+  background:linear-gradient(135deg,var(--ac-dim),var(--blue-dim));
+  border:1px solid rgba(0,217,166,.3);border-radius:var(--r-lg);
+  padding:12px 14px;margin-bottom:14px;
+  display:none;align-items:center;gap:10px;
+}
+.install-banner.show{display:flex}
+
+/* ===== NOTIF BANNER ===== */
+.notif-banner{
+  background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.25);
+  border-radius:var(--r-md);padding:10px 14px;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;font-size:12px;
+}
+
+/* ===== ADVAX BADGE ===== */
+.advax-badge{text-align:center;padding:6px;color:var(--txm);font-size:11px}
+.advax-badge a{color:var(--accent);text-decoration:none;font-weight:600}
+.advax-badge a:hover{text-decoration:underline}
+
+/* ===== RESPONSIVE ===== */
+@media(min-width:640px){
+  main{padding-inline:20px}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== ONBOARDING ===== -->
+<div class="ob-overlay" id="obOverlay">
+  <div class="ob-brand">
+    <div class="brand-logo" style="width:32px;height:32px;font-size:11px">AV</div>
+    <span style="font-size:14px;font-weight:700">AdVax</span>
+  </div>
+
+  <div class="ob-slide active" id="ob0">
+    <div class="ob-icon">👋</div>
+    <div class="ob-title">مرحباً بك في<br/>مخطط AdVax</div>
+    <div class="ob-desc">التطبيق الذي يساعدك على تنظيم حياتك وتتبّع أهدافك دون أن تنسى شيئاً أبداً</div>
+  </div>
+
+  <div class="ob-slide" id="ob1">
+    <div class="ob-icon">🚀</div>
+    <div class="ob-title">ماذا يمكنك فعله؟</div>
+    <div class="ob-features">
+      <div class="ob-feat"><span class="ob-feat-icon">📋</span><span>أضف مهامك اليومية بأولويات وتواريخ</span></div>
+      <div class="ob-feat"><span class="ob-feat-icon">🎓</span><span>تتبّع كورساتك على Coursera وUdemy وغيرها</span></div>
+      <div class="ob-feat"><span class="ob-feat-icon">💡</span><span>احفظ أفكارك فوراً وحوّلها لمهام</span></div>
+      <div class="ob-feat"><span class="ob-feat-icon">🎯</span><span>ضع أهدافاً طويلة المدى وراقب تقدّمك</span></div>
+      <div class="ob-feat"><span class="ob-feat-icon">⏱️</span><span>مؤقت تركيز Pomodoro لكل مهمة</span></div>
+    </div>
+  </div>
+
+  <div class="ob-slide" id="ob2">
+    <div class="ob-icon">🎯</div>
+    <div class="ob-title">جاهز للبدء؟</div>
+    <div class="ob-desc">بياناتك محفوظة على جهازك فقط ولا تُشارَك مع أحد. يعمل التطبيق بدون إنترنت بعد التثبيت.</div>
+    <button class="btn btn-primary" onclick="finishOnboarding()" style="width:100%;padding:14px;font-size:15px;margin-bottom:12px">ابدأ الآن 🚀</button>
+    <div style="font-size:11px;color:var(--txm)">من إنتاج <a href="https://facebook.com/AdVax" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">AdVax</a></div>
+  </div>
+
+  <div class="ob-dots">
+    <div class="ob-dot active" id="odot0"></div>
+    <div class="ob-dot" id="odot1"></div>
+    <div class="ob-dot" id="odot2"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;width:100%;max-width:360px">
+    <button class="btn btn-ghost" id="obPrev" onclick="obNav(-1)" style="flex:1;display:none">السابق</button>
+    <button class="btn btn-primary" id="obNext" onclick="obNav(1)" style="flex:1">التالي</button>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="brand">
+    <div class="brand-logo">AV</div>
+    <div>
+      <div class="brand-name">مخطط AdVax</div>
+      <div class="brand-sub">v2.0</div>
+    </div>
+  </div>
+  <div class="h-actions">
+    <button class="btn-icon" onclick="openSearch()" title="بحث شامل">🔍</button>
+    <button class="btn-icon" onclick="document.getElementById('importFile').click()" title="استيراد بيانات">📥</button>
+    <button class="btn-icon" onclick="exportData()" title="تصدير بيانات">💾</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)"/>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+  <!-- PAGE: HOME -->
+  <div class="page active" id="page-home">
+
+    <div class="install-banner" id="installBanner">
+      <span style="font-size:22px">📲</span>
+      <div style="flex:1;font-size:12px">ثبّت التطبيق للعمل <strong style="color:var(--accent)">بدون إنترنت</strong></div>
+      <button class="btn btn-primary btn-sm" id="installBtn">تثبيت</button>
+    </div>
+
+    <div id="notifBanner" class="notif-banner" style="display:none">
+      <span style="font-size:18px">🔔</span>
+      <div style="flex:1;color:var(--tx2)">فعّل الإشعارات لتتلقى تذكيرات بمهامك</div>
+      <button class="btn btn-ghost btn-sm" onclick="requestNotifications()">تفعيل</button>
+      <button class="btn-icon" onclick="this.parentElement.style.display='none'" style="width:24px;height:24px;font-size:11px">✕</button>
+    </div>
+
+    <div class="quote-card">
+      <div class="quote-text" id="quoteText"></div>
+      <div class="quote-author" id="quoteAuthor"></div>
+    </div>
+
+    <!-- Ring Chart -->
+    <div class="ring-wrap" id="ringWrap">
+      <div id="ringChart"></div>
+      <div class="ring-info">
+        <div class="ring-title">تقدّمك اليوم</div>
+        <div class="ring-detail" id="ringDetail"></div>
+        <div class="ring-motive" id="ringMotive"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card g"><div class="s-icon">📋</div><div class="s-num" id="stTasks">0</div><div class="s-lbl">مهام معلّقة</div></div>
+      <div class="stat-card b"><div class="s-icon">🎓</div><div class="s-num" id="stCourses">0</div><div class="s-lbl">كورسات</div></div>
+      <div class="stat-card o"><div class="s-icon">💡</div><div class="s-num" id="stIdeas">0</div><div class="s-lbl">أفكار</div></div>
+      <div class="stat-card p"><div class="s-icon">🎯</div><div class="s-num" id="stGoals">0</div><div class="s-lbl">أهداف</div></div>
+    </div>
+
+    <!-- Week Strip -->
+    <div class="week-strip-wrap">
+      <div class="week-label">📅 هذا الأسبوع</div>
+      <div class="week-strip" id="weekStrip"></div>
+    </div>
+
+    <!-- Urgent Tasks -->
+    <div class="sec-block">
+      <div class="sec-title">⚡ المهام العاجلة <span class="see-all" onclick="switchPage('tasks')">عرض الكل ←</span></div>
+      <div class="item-list" id="dashTasks"></div>
+    </div>
+
+    <!-- Ongoing Courses -->
+    <div class="sec-block">
+      <div class="sec-title">🎓 الكورسات الجارية <span class="see-all" onclick="switchPage('courses')">عرض الكل ←</span></div>
+      <div class="item-list" id="dashCourses"></div>
+    </div>
+
+    <div class="advax-badge">
+      صُنع بـ ❤️ من قِبَل <a href="https://facebook.com/AdVax" target="_blank" rel="noopener">AdVax</a> — شركة البرمجيات الذكية
+    </div>
+  </div>
+
+  <!-- PAGE: TASKS -->
+  <div class="page" id="page-tasks">
+    <div class="pg-hdr">
+      <div><div class="pg-title">📋 المهام</div><div class="pg-sub">نظّم يومك ولا تنسَ شيئاً</div></div>
+      <div class="pg-count" id="taskCount">—</div>
+    </div>
+
+    <div class="add-form" id="taskForm">
+      <div class="add-form-title" id="taskFormTitle">➕ إضافة مهمة جديدة</div>
+      <div class="form-row"><input type="text" id="taskInput" placeholder="اكتب مهمتك هنا..."/></div>
+      <div class="form-row">
+        <select id="taskPriority">
+          <option value="high">🔴 عاجل</option>
+          <option value="medium" selected>🟡 متوسط</option>
+          <option value="low">🟢 منخفض</option>
+        </select>
+        <select id="taskCategory">
+          <option value="دراسة">📚 دراسة</option>
+          <option value="عمل">💼 عمل</option>
+          <option value="شخصي">👤 شخصي</option>
+          <option value="صحة">💪 صحة</option>
+          <option value="مشاريع">🚀 مشاريع</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="text" id="taskDate" placeholder="التاريخ (اختياري)" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"/>
+        <select id="taskGoalLink"><option value="">🎯 بدون هدف</option></select>
+      </div>
+      <div class="form-row">
+        <button class="btn btn-primary" id="taskSaveBtn" onclick="saveTask()" style="flex:1">إضافة ✓</button>
+        <button class="btn btn-ghost" id="taskCancelBtn" onclick="cancelTaskEdit()" style="display:none">إلغاء</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="chip active" onclick="filterTasks('all',this)">الكل</button>
+      <button class="chip" onclick="filterTasks('high',this)">🔴 عاجل</button>
+      <button class="chip" onclick="filterTasks('medium',this)">🟡 متوسط</button>
+      <button class="chip" onclick="filterTasks('low',this)">🟢 منخفض</button>
+      <button class="chip" onclick="filterTasks('دراسة',this)">📚 دراسة</button>
+      <button class="chip" onclick="filterTasks('عمل',this)">💼 عمل</button>
+      <button class="chip" onclick="filterTasks('today',this)">📅 اليوم</button>
+    </div>
+    <div class="item-list" id="taskList"></div>
+  </div>
+
+  <!-- PAGE: COURSES -->
+  <div class="page" id="page-courses">
+    <div class="pg-hdr">
+      <div><div class="pg-title">🎓 الكورسات</div><div class="pg-sub">تتبّع رحلتك التعليمية</div></div>
+      <div class="pg-count" id="courseCount">—</div>
+    </div>
+
+    <div class="add-form">
+      <div class="add-form-title" id="courseFormTitle">➕ إضافة كورس جديد</div>
+      <div class="form-row"><input type="text" id="courseName" placeholder="اسم الكورس"/></div>
+      <div class="form-row">
+        <select id="coursePlatform">
+          <option value="Coursera">🎓 Coursera</option>
+          <option value="Udemy">📘 Udemy</option>
+          <option value="YouTube">▶️ YouTube</option>
+          <option value="edX">🏫 edX</option>
+          <option value="LinkedIn">💼 LinkedIn Learning</option>
+          <option value="أخرى">🌐 أخرى</option>
+        </select>
+        <select id="courseStatus">
+          <option value="planned">📅 مخطط</option>
+          <option value="ongoing">⚡ جاري</option>
+          <option value="done">✅ مكتمل</option>
+        </select>
+      </div>
+      <div class="form-row"><input type="url" id="courseUrl" placeholder="رابط الكورس (اختياري)"/></div>
+      <div class="form-row">
+        <input type="text" id="courseInstructor" placeholder="اسم المدرّب (اختياري)"/>
+        <input type="text" id="courseDuration" placeholder="المدة (مثال: 10 ساعات)"/>
+      </div>
+      <div class="form-row">
+        <button class="btn btn-primary" id="courseSaveBtn" onclick="saveCourse()" style="flex:1">حفظ الكورس ✓</button>
+        <button class="btn btn-ghost" id="courseCancelBtn" onclick="cancelCourseEdit()" style="display:none">إلغاء</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="chip active" onclick="filterCourses('all',this)">الكل</button>
+      <button class="chip" onclick="filterCourses('planned',this)">📅 مخطط</button>
+      <button class="chip" onclick="filterCourses('ongoing',this)">⚡ جاري</button>
+      <button class="chip" onclick="filterCourses('done',this)">✅ مكتمل</button>
+    </div>
+    <div class="item-list" id="courseList"></div>
+  </div>
+
+  <!-- PAGE: DEVELOP -->
+  <div class="page" id="page-develop">
+    <div class="pg-hdr">
+      <div><div class="pg-title">🚀 التطوير</div><div class="pg-sub">أفكارك وأهدافك وإنجازاتك</div></div>
+    </div>
+
+    <div class="sub-tabs">
+      <button class="sub-tab active" id="stab-ideas" onclick="switchDev('ideas')">💡 أفكار</button>
+      <button class="sub-tab" id="stab-goals" onclick="switchDev('goals')">🎯 أهداف</button>
+      <button class="sub-tab" id="stab-ach" onclick="switchDev('ach')">🏆 إنجازات</button>
+    </div>
+
+    <!-- IDEAS -->
+    <div id="dev-ideas">
+      <div class="add-form">
+        <div class="add-form-title" id="ideaFormTitle">💭 فكرة جديدة</div>
+        <div class="form-row">
+          <input type="text" id="ideaTitle" placeholder="عنوان الفكرة"/>
+          <select id="ideaTag">
+            <option value="فكرة">💡 فكرة</option>
+            <option value="ملاحظة">📝 ملاحظة</option>
+            <option value="مشروع">🚀 مشروع</option>
+            <option value="قراءة">📖 للقراءة</option>
+            <option value="تذكير">⏰ تذكير</option>
+          </select>
+        </div>
+        <div class="form-row"><textarea id="ideaText" placeholder="اكتب فكرتك بالتفصيل..."></textarea></div>
+        <div class="form-row">
+          <button class="btn btn-primary" id="ideaSaveBtn" onclick="saveIdea()" style="flex:1">حفظ الفكرة ✓</button>
+          <button class="btn btn-ghost" id="ideaCancelBtn" onclick="cancelIdeaEdit()" style="display:none">إلغاء</button>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" class="search-input" id="ideaSearch" placeholder="ابحث في أفكارك..." oninput="renderIdeas(this.value)"/>
+      </div>
+      <div class="item-list" id="ideaList"></div>
+    </div>
+
+    <!-- GOALS -->
+    <div id="dev-goals" style="display:none">
+      <div class="add-form">
+        <div class="add-form-title" id="goalFormTitle">🎯 هدف جديد</div>
+        <div class="form-row"><input type="text" id="goalTitle" placeholder="ما هو هدفك؟"/></div>
+        <div class="form-row"><textarea id="goalDesc" placeholder="صِف هدفك بالتفصيل..." style="min-height:55px"></textarea></div>
+        <div class="form-row">
+          <select id="goalCategory">
+            <option value="أكاديمي">🎓 أكاديمي</option>
+            <option value="مهني">💼 مهني</option>
+            <option value="شخصي">👤 شخصي</option>
+            <option value="مالي">💰 مالي</option>
+            <option value="صحي">💪 صحي</option>
+          </select>
+          <input type="text" id="goalDeadline" placeholder="الموعد النهائي" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"/>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-primary" id="goalSaveBtn" onclick="saveGoal()" style="flex:1">إضافة الهدف ✓</button>
+          <button class="btn btn-ghost" id="goalCancelBtn" onclick="cancelGoalEdit()" style="display:none">إلغاء</button>
+        </div>
+      </div>
+      <div class="item-list" id="goalList"></div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="dev-ach" style="display:none">
+      <div class="card" style="margin-bottom:14px;text-align:center;padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">🏆</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent);font-family:var(--mono)" id="achCount">0</div>
+        <div style="font-size:12px;color:var(--txm);margin-top:4px">مهمة مكتملة</div>
+      </div>
+      <div class="item-list" id="achList"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bot-nav">
+  <button class="nav-item active" id="nav-home" onclick="switchPage('home')">
+    <span class="ni">🏠</span><span class="nl">الرئيسية</span>
+  </button>
+  <button class="nav-item" id="nav-tasks" onclick="switchPage('tasks')">
+    <span class="ni nav-badge" id="navTasksBadge" data-count="0">📋</span><span class="nl">المهام</span>
+  </button>
+  <button class="nav-item" id="nav-courses" onclick="switchPage('courses')">
+    <span class="ni">🎓</span><span class="nl">الكورسات</span>
+  </button>
+  <button class="nav-item" id="nav-develop" onclick="switchPage('develop')">
+    <span class="ni">🚀</span><span class="nl">التطوير</span>
+  </button>
+</nav>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== MODAL: COURSE PROGRESS ===== -->
+<div class="overlay" id="progOverlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📊 تحديث تقدّم الكورس</div>
+    <input type="range" id="progSlider" min="0" max="100" value="0"
+      oninput="document.getElementById('progVal').textContent=this.value+'%'"/>
+    <div style="text-align:center;font-family:var(--mono);font-size:28px;color:var(--accent);margin:10px 0" id="progVal">0%</div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveCourseProgress()">حفظ</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeOverlay('progOverlay')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: POMODORO ===== -->
+<div class="overlay" id="pomoOverlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⏱️ مؤقت التركيز</div>
+    <div class="pomo-timer">
+      <div class="pomo-ring-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bdr)" stroke-width="8"/>
+          <circle id="pomoRingCircle" cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="8"
+            stroke-dasharray="326.73" stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="pomo-ring-text" id="pomoDisplay">25:00</div>
+      </div>
+      <div class="pomo-task-name" id="pomoTaskName">لم تُحدَّد مهمة</div>
+      <div class="pomo-controls">
+        <button class="btn btn-primary" id="pomoPlayBtn" onclick="togglePomodoro()" style="min-width:100px">▶ ابدأ</button>
+        <button class="btn btn-ghost" onclick="resetPomodoro()">↺ إعادة</button>
+        <button class="btn btn-ghost" onclick="switchPomoMode()" id="pomoModeBtn">☕ استراحة</button>
+      </div>
+      <div class="pomo-sessions" id="pomoSessions">جلسات اليوم: 0 🍅</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: SEARCH ===== -->
+<div class="overlay" id="searchOverlay">
+  <div class="modal" style="max-height:85dvh">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔍 البحث الشامل</div>
+    <input type="text" class="search-modal-input" id="searchModalInput"
+      placeholder="ابحث في المهام، الكورسات، الأفكار، الأهداف..."
+      oninput="doSearch(this.value)" autofocus/>
+    <div id="searchResults"><div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:32px">🔍</div><div class="empty-sub">ابدأ الكتابة للبحث</div></div></div>
+  </div>
+</div>
+
+<!-- ===== SW REGISTER ===== -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW:',e));
+  });
+}
+</script>
+
+<!-- ===== APP LOGIC ===== -->
+<script>
+'use strict';
+
+/* ================================================================
+   DB LAYER
+   ================================================================ */
+const DB = {
+  get: k => JSON.parse(localStorage.getItem('advax_' + k) || '[]'),
+  set: (k, v) => localStorage.setItem('advax_' + k, JSON.stringify(v)),
+  getVal: k => localStorage.getItem('advax_' + k),
+  setVal: (k, v) => localStorage.setItem('advax_' + k, v),
+};
+
+/* ================================================================
+   STATE
+   ================================================================ */
+let TASK_FILTER = 'all';
+let COURSE_FILTER = 'all';
+let DEV_TAB = 'ideas';
+let EDIT_TASK_ID = null;
+let EDIT_COURSE_ID = null;
+let EDIT_IDEA_ID = null;
+let EDIT_GOAL_ID = null;
+let COURSE_EDIT_PROGRESS_ID = null;
+const PENDING = {}; // undo delete
+
+/* ================================================================
+   QUOTES
+   ================================================================ */
+const QUOTES = [
+  {text:'النجاح هو مجموع جهود صغيرة تتكرر يوماً بعد يوم.',author:'روبرت كولير'},
+  {text:'من لا يخطط للنجاح فهو يخطط للفشل.',author:'ونستون تشرشل'},
+  {text:'الوقت كالسيف إن لم تقطعه قطعك.',author:'مثل عربي'},
+  {text:'الاستثمار في المعرفة يأتي دائماً بأفضل الأرباح.',author:'بنجامين فرانكلين'},
+  {text:'لا تؤجّل عمل اليوم إلى الغد.',author:'حكمة مشهورة'},
+  {text:'كل إنجاز عظيم بدأ بقرار صغير.',author:'نابليون هيل'},
+  {text:'نظّم وقتك أولاً، ثم نظّم حياتك.',author:'بريان تريسي'},
+  {text:'الفشل هو الفرصة للبدء من جديد بشكل أكثر ذكاءً.',author:'هنري فورد'},
+];
+
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='home') renderDashboard();
+  if(name==='tasks'){renderTasks();populateGoalDropdown()}
+  if(name==='courses') renderCourses();
+  if(name==='develop') renderDevTab();
+}
+
+function switchDev(tab){
+  DEV_TAB = tab;
+  ['ideas','goals','ach'].forEach(t=>{
+    document.getElementById('dev-'+t).style.display = t===tab?'block':'none';
+    document.getElementById('stab-'+t).classList.toggle('active', t===tab);
+  });
+  renderDevTab();
+}
+
+function renderDevTab(){
+  if(DEV_TAB==='ideas') renderIdeas();
+  else if(DEV_TAB==='goals') renderGoals();
+  else renderAchievements();
+}
+
+/* ================================================================
+   TOAST + UNDO DELETE
+   ================================================================ */
+let toastTimers = {};
+
+function showToast(msg, undoKey=null) {
+  const wrap = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = undoKey ? 'toast undo-toast' : 'toast';
+
+  if(undoKey) {
+    t.innerHTML = `<span>${msg}</span><button class="toast-undo-btn" onclick="undoDelete('${undoKey}',this.parentElement)">↩️ تراجع</button>`;
+  } else {
+    t.textContent = msg;
+  }
+  wrap.appendChild(t);
+  const tid = setTimeout(()=>{ t.style.animation='fadeOut .3s ease forwards'; setTimeout(()=>t.remove(),300); }, undoKey ? 5000 : 2200);
+  if(undoKey) toastTimers[undoKey] = {el:t, tid};
+}
+
+function softDelete(type, id, displayName) {
+  const items = DB.get(type);
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  DB.set(type, items.filter(i=>i.id!==id));
+  const key = type+'_'+id;
+  PENDING[key] = {item, type};
+  reRender(type);
+  updateStats();
+  showToast(`🗑️ تم حذف "${displayName.slice(0,20)}..."`, key);
+}
+
+function undoDelete(key, toastEl) {
+  const pd = PENDING[key];
+  if(!pd) return;
+  const items = DB.get(pd.type);
+  items.unshift(pd.item);
+  DB.set(pd.type, items);
+  delete PENDING[key];
+  if(toastTimers[key]) { clearTimeout(toastTimers[key].tid); delete toastTimers[key]; }
+  toastEl.style.animation='fadeOut .3s ease forwards';
+  setTimeout(()=>toastEl.remove(),300);
+  reRender(pd.type);
+  updateStats();
+  showToast('↩️ تم الاستعادة بنجاح');
+}
+
+function reRender(type){
+  if(type==='tasks') renderTasks();
+  else if(type==='courses') renderCourses();
+  else if(type==='ideas') renderIdeas();
+  else if(type==='goals') renderGoals();
+}
+
+/* ================================================================
+   STATS + RING
+   ================================================================ */
+function updateStats(){
+  const tasks = DB.get('tasks');
+  const done = tasks.filter(t=>t.done).length;
+  const pending = tasks.filter(t=>!t.done).length;
+  const courses = DB.get('courses').length;
+  const ideas = DB.get('ideas').length;
+  const goals = DB.get('goals').length;
+  document.getElementById('stTasks').textContent = pending;
+  document.getElementById('stCourses').textContent = courses;
+  document.getElementById('stIdeas').textContent = ideas;
+  document.getElementById('stGoals').textContent = goals;
+  // nav badge
+  document.getElementById('navTasksBadge').dataset.count = pending > 9 ? '9+' : pending;
+  // ring
+  const total = tasks.length;
+  const pct = total===0 ? 0 : Math.round((done/total)*100);
+  const C = 2*Math.PI*34; // circumference for r=34
+  const offset = C - (pct/100)*C;
+  const motives = [
+    [0,30,'ابدأ الآن 💪'],[31,60,'أنت في المسار 🔥'],[61,80,'رائع، استمر! ⚡'],
+    [81,99,'شارفت على الإنجاز 🎯'],[100,100,'أنجزت كل شيء! 🎉']
+  ];
+  const motive = motives.find(([a,b])=>pct>=a&&pct<=b)?.[2] || '';
+  document.getElementById('ringChart').innerHTML=`
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="34" fill="none" stroke="var(--bdr)" stroke-width="7"/>
+      <circle cx="40" cy="40" r="34" fill="none" stroke="var(--accent)" stroke-width="7"
+        stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+        stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset .6s ease"/>
+      <text x="40" y="44" text-anchor="middle" font-family="var(--mono)" font-size="13" font-weight="700" fill="var(--accent)">${pct}%</text>
+    </svg>`;
+  document.getElementById('ringDetail').textContent = `${done} من ${total} مهمة مكتملة`;
+  document.getElementById('ringMotive').textContent = motive;
+}
+
+/* ================================================================
+   WEEK STRIP
+   ================================================================ */
+function renderWeekStrip(){
+  const today = new Date();
+  const dayNames = ['أحد','اثن','ثلا','أرب','خمس','جمع','سبت'];
+  const tasks = DB.get('tasks').filter(t=>!t.done);
+  let html = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(today);
+    d.setDate(today.getDate()+i);
+    const ds = d.toISOString().split('T')[0];
+    const count = tasks.filter(t=>t.date===ds).length;
+    const isToday = i===0;
+    html += `<div class="week-day ${isToday?'today':''} ${count>0?'has-tasks':''}" onclick="filterByDate('${ds}')">
+      <div class="wd-name">${isToday?'اليوم':dayNames[d.getDay()]}</div>
+      <div class="wd-num">${d.getDate()}</div>
+      <div class="wd-dot ${count===0?'hidden':''}" title="${count} مهام"></div>
+    </div>`;
+  }
+  document.getElementById('weekStrip').innerHTML = html;
+}
+
+function filterByDate(ds){
+  switchPage('tasks');
+  const today = new Date().toISOString().split('T')[0];
+  if(ds===today){
+    filterTasks('today', document.querySelectorAll('#page-tasks .chip')[6]);
+  } else {
+    // filter by specific date
+    TASK_FILTER = 'date_'+ds;
+    document.querySelectorAll('#page-tasks .chip').forEach(c=>c.classList.remove('active'));
+    renderTasks();
+  }
+}
+
+/* ================================================================
+   DASHBOARD
+   ================================================================ */
+function renderDashboard(){
+  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('quoteText').textContent = `"${q.text}"`;
+  document.getElementById('quoteAuthor').textContent = `— ${q.author}`;
+  updateStats();
+  renderWeekStrip();
+
+  // Urgent tasks preview
+  const urgent = DB.get('tasks').filter(t=>!t.done&&t.priority==='high').slice(0,3);
+  const dt = document.getElementById('dashTasks');
+  dt.innerHTML = urgent.length
+    ? urgent.map(t=>renderTaskHTML(t,true)).join('')
+    : `<div style="padding:10px;color:var(--txm);font-size:12px;text-align:center">🎉 لا توجد مهام عاجلة</div>`;
+
+  // Ongoing courses preview
+  const ongoing = DB.get('courses').filter(c=>c.status==='ongoing').slice(0,2);
+  const dc = document.getElementById('dashCourses');
+  dc.innerHTML = ongoing.length
+    ? ongoing.map(c=>renderCourseHTML(c,true)).join('')
+    : `<div style="padding:10px;color:var(--txm);font-size:12px;text-align:center">أضف كورساتك الجارية 🎓</div>`;
+
+  // Notification prompt
+  if(!DB.getVal('notifAsked') && 'Notification' in window){
+    document.getElementById('notifBanner').style.display='flex';
+  }
+
+  // Backup reminder
+  const lastExport = DB.getVal('lastExport');
+  if(lastExport){
+    const days = Math.floor((Date.now()-parseInt(lastExport))/(1000*60*60*24));
+    if(days>7) showToast('⚠️ لم تصدّر بياناتك منذ '+days+' أيام');
+  }
+}
+
+/* ================================================================
+   TASKS
+   ================================================================ */
+function populateGoalDropdown(){
+  const sel = document.getElementById('taskGoalLink');
+  const goals = DB.get('goals');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">🎯 بدون هدف</option>';
+  goals.forEach(g=>{
+    const opt = document.createElement('option');
+    opt.value = g.id; opt.textContent = `🎯 ${g.title}`;
+    if(String(g.id)===String(cur)) opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+
+function saveTask(){
+  const val = document.getElementById('taskInput').value.trim();
+  if(!val){ showToast('⚠️ اكتب نص المهمة أولاً'); return; }
+  const tasks = DB.get('tasks');
+  if(EDIT_TASK_ID){
+    const t = tasks.find(t=>t.id===EDIT_TASK_ID);
+    if(t){
+      t.title = val;
+      t.priority = document.getElementById('taskPriority').value;
+      t.category = document.getElementById('taskCategory').value;
+      t.date = document.getElementById('taskDate').value;
+      t.goalId = document.getElementById('taskGoalLink').value;
+    }
+    DB.set('tasks',tasks);
+    cancelTaskEdit();
+    showToast('✏️ تم تحديث المهمة');
+  } else {
+    tasks.unshift({
+      id:Date.now(), title:val,
+      priority:document.getElementById('taskPriority').value,
+      category:document.getElementById('taskCategory').value,
+      date:document.getElementById('taskDate').value,
+      goalId:document.getElementById('taskGoalLink').value,
+      done:false, doneAt:null,
+      created:new Date().toLocaleDateString('ar-SA')
+    });
+    DB.set('tasks',tasks);
+    document.getElementById('taskInput').value='';
+    document.getElementById('taskDate').value='';
+    document.getElementById('taskDate').type='text';
+    document.getElementById('taskGoalLink').value='';
+    showToast('✅ تمت إضافة المهمة');
+  }
+  renderTasks(); updateStats(); renderWeekStrip();
+}
+
+function editTask(id){
+  const t = DB.get('tasks').find(t=>t.id===id);
+  if(!t) return;
+  EDIT_TASK_ID = id;
+  document.getElementById('taskInput').value = t.title;
+  document.getElementById('taskPriority').value = t.priority;
+  document.getElementById('taskCategory').value = t.category;
+  if(t.date){ document.getElementById('taskDate').type='date'; document.getElementById('taskDate').value=t.date; }
+  populateGoalDropdown();
+  document.getElementById('taskGoalLink').value = t.goalId||'';
+  document.getElementById('taskFormTitle').textContent = '✏️ تعديل المهمة';
+  document.getElementById('taskSaveBtn').textContent = 'تحديث ✓';
+  document.getElementById('taskCancelBtn').style.display='block';
+  document.getElementById('taskForm').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelTaskEdit(){
+  EDIT_TASK_ID=null;
+  document.getElementById('taskInput').value='';
+  document.getElementById('taskDate').value='';
+  document.getElementById('taskDate').type='text';
+  document.getElementById('taskFormTitle').textContent='➕ إضافة مهمة جديدة';
+  document.getElementById('taskSaveBtn').textContent='إضافة ✓';
+  document.getElementById('taskCancelBtn').style.display='none';
+}
+
+function toggleTask(id){
+  const tasks = DB.get('tasks');
+  const t = tasks.find(t=>t.id===id);
+  if(t){ t.done=!t.done; t.doneAt=t.done?new Date().toLocaleDateString('ar-SA'):null; }
+  DB.set('tasks',tasks);
+  renderTasks(); updateStats();
+  if(t&&t.done) showToast('🎉 أحسنت! مهمة مكتملة');
+}
+
+function filterTasks(f,el){
+  TASK_FILTER=f;
+  document.querySelectorAll('#page-tasks .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderTasks();
+}
+
+const PRIORITY_LABEL = {high:'🔴 عاجل',medium:'🟡 متوسط',low:'🟢 منخفض'};
+const PRIORITY_CLASS = {high:'b-high',medium:'b-med',low:'b-low'};
+const STATUS_LABEL = {planned:'مخطط',ongoing:'جاري',done:'مكتمل'};
+const PLAT_ICON = {Coursera:'🎓',Udemy:'📘',YouTube:'▶️',edX:'🏫',LinkedIn:'💼',أخرى:'🌐'};
+const PLAT_COLOR = {Coursera:'#0056D3',Udemy:'#EC5252',YouTube:'#FF0000',edX:'#02262B',LinkedIn:'#0A66C2',أخرى:'#58a6ff'};
+
+function renderTaskHTML(t, compact=false){
+  const goals = DB.get('goals');
+  const goal = goals.find(g=>String(g.id)===String(t.goalId));
+  return `
+  <div class="task-item ${t.done?'done':''}" id="ti-${t.id}">
+    <div class="task-check" onclick="toggleTask(${t.id})"><span class="chk-ico">✓</span></div>
+    <div class="task-body">
+      <div class="task-title">${t.title}</div>
+      <div class="task-meta">
+        <span class="badge ${PRIORITY_CLASS[t.priority]}">${PRIORITY_LABEL[t.priority]}</span>
+        <span class="badge b-cat">${t.category}</span>
+        ${t.date?`<span class="badge b-date">📅 ${t.date}</span>`:''}
+        ${goal?`<span class="badge b-goal">🎯 ${goal.title.slice(0,12)}</span>`:''}
+      </div>
+    </div>
+    ${!compact?`<div class="task-actions">
+      <button class="act-btn pomo-btn" onclick="openPomodoro(${t.id})" title="تركيز">⏱️</button>
+      <button class="act-btn edit-btn" onclick="editTask(${t.id})" title="تعديل">✏️</button>
+      <button class="act-btn del-btn" onclick="softDelete('tasks',${t.id},'${t.title.replace(/'/g,"\\'")}')">✕</button>
+    </div>`:''}
+  </div>`;
+}
+
+function renderTasks(){
+  let tasks = DB.get('tasks');
+  const total = tasks.length;
+  const done = tasks.filter(t=>t.done).length;
+  document.getElementById('taskCount').textContent=`${done}/${total} مكتمل`;
+
+  const today = new Date().toISOString().split('T')[0];
+  if(TASK_FILTER==='done') tasks=tasks.filter(t=>t.done);
+  else if(TASK_FILTER==='today') tasks=tasks.filter(t=>!t.done&&t.date===today);
+  else if(TASK_FILTER==='high'||TASK_FILTER==='medium'||TASK_FILTER==='low')
+    tasks=tasks.filter(t=>!t.done&&t.priority===TASK_FILTER);
+  else if(['دراسة','عمل','شخصي','صحة','مشاريع'].includes(TASK_FILTER))
+    tasks=tasks.filter(t=>!t.done&&t.category===TASK_FILTER);
+  else if(TASK_FILTER.startsWith('date_'))
+    tasks=tasks.filter(t=>!t.done&&t.date===TASK_FILTER.replace('date_',''));
+  else tasks=tasks.filter(t=>!t.done);
+
+  const el = document.getElementById('taskList');
+  el.innerHTML = tasks.length
+    ? tasks.map(t=>renderTaskHTML(t)).join('')
+    : `<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">لا توجد مهام</div><div class="empty-sub">ابدأ بإضافة مهمة جديدة</div></div>`;
+}
+
+/* ================================================================
+   COURSES
+   ================================================================ */
+function saveCourse(){
+  const name = document.getElementById('courseName').value.trim();
+  if(!name){ showToast('⚠️ اكتب اسم الكورس'); return; }
+  const courses = DB.get('courses');
+  if(EDIT_COURSE_ID){
+    const c = courses.find(c=>c.id===EDIT_COURSE_ID);
+    if(c){
+      c.name=name; c.platform=document.getElementById('coursePlatform').value;
+      c.status=document.getElementById('courseStatus').value;
+      c.url=document.getElementById('courseUrl').value.trim();
+      c.instructor=document.getElementById('courseInstructor').value.trim();
+      c.duration=document.getElementById('courseDuration').value.trim();
+    }
+    DB.set('courses',courses);
+    cancelCourseEdit();
+    showToast('✏️ تم تحديث الكورس');
+  } else {
+    courses.unshift({
+      id:Date.now(), name,
+      platform:document.getElementById('coursePlatform').value,
+      status:document.getElementById('courseStatus').value,
+      url:document.getElementById('courseUrl').value.trim(),
+      instructor:document.getElementById('courseInstructor').value.trim(),
+      duration:document.getElementById('courseDuration').value.trim(),
+      progress:0, added:new Date().toLocaleDateString('ar-SA')
+    });
+    DB.set('courses',courses);
+    ['courseName','courseUrl','courseInstructor','courseDuration'].forEach(id=>document.getElementById(id).value='');
+    showToast('🎓 تم حفظ الكورس');
+  }
+  renderCourses(); updateStats();
+}
+
+function editCourse(id){
+  const c = DB.get('courses').find(c=>c.id===id);
+  if(!c) return;
+  EDIT_COURSE_ID = id;
+  document.getElementById('courseName').value=c.name;
+  document.getElementById('coursePlatform').value=c.platform;
+  document.getElementById('courseStatus').value=c.status;
+  document.getElementById('courseUrl').value=c.url||'';
+  document.getElementById('courseInstructor').value=c.instructor||'';
+  document.getElementById('courseDuration').value=c.duration||'';
+  document.getElementById('courseFormTitle').textContent='✏️ تعديل الكورس';
+  document.getElementById('courseSaveBtn').textContent='تحديث ✓';
+  document.getElementById('courseCancelBtn').style.display='block';
+  document.getElementById('courseName').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelCourseEdit(){
+  EDIT_COURSE_ID=null;
+  ['courseName','courseUrl','courseInstructor','courseDuration'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('courseFormTitle').textContent='➕ إضافة كورس جديد';
+  document.getElementById('courseSaveBtn').textContent='حفظ الكورس ✓';
+  document.getElementById('courseCancelBtn').style.display='none';
+}
+
+function openCourseProgress(id){
+  const c = DB.get('courses').find(c=>c.id===id);
+  if(!c) return;
+  COURSE_EDIT_PROGRESS_ID=id;
+  document.getElementById('progSlider').value=c.progress||0;
+  document.getElementById('progVal').textContent=(c.progress||0)+'%';
+  openOverlay('progOverlay');
+}
+
+function saveCourseProgress(){
+  const courses = DB.get('courses');
+  const c = courses.find(c=>c.id===COURSE_EDIT_PROGRESS_ID);
+  if(c){
+    c.progress=parseInt(document.getElementById('progSlider').value);
+    if(c.progress===100) c.status='done';
+    else if(c.progress>0) c.status='ongoing';
+    DB.set('courses',courses);
+  }
+  closeOverlay('progOverlay');
+  renderCourses(); showToast('📊 تم تحديث التقدم');
+}
+
+function filterCourses(f,el){
+  COURSE_FILTER=f;
+  document.querySelectorAll('#page-courses .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderCourses();
+}
+
+function renderCourseHTML(c, compact=false){
+  const ico = PLAT_ICON[c.platform]||'🌐';
+  const clr = PLAT_COLOR[c.platform]||'#58a6ff';
+  const scls = {planned:'s-planned',ongoing:'s-ongoing',done:'s-done'}[c.status];
+  const prog = c.progress||0;
+  return `
+  <div class="course-item">
+    <div class="c-icon" style="background:${clr}22"><span style="font-size:20px">${ico}</span></div>
+    <div class="c-body">
+      <div class="c-name">${c.name}</div>
+      <div class="c-plat">${c.platform}${c.instructor?' · '+c.instructor:''}${c.duration?' · '+c.duration:''}</div>
+      <div class="c-meta">
+        <span class="s-dot ${scls}"></span>
+        <span style="font-size:11px;color:var(--tx2)">${STATUS_LABEL[c.status]}</span>
+        ${c.url?`<a class="c-link" href="${c.url}" target="_blank">فتح ↗</a>`:''}
+      </div>
+      ${prog>0?`<div class="prog-wrap"><div class="prog-bar" style="width:${prog}%"></div></div>`:''}
+    </div>
+    ${!compact?`<div class="c-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openCourseProgress(${c.id})" style="font-size:10px;padding:4px 6px">📊 ${prog}%</button>
+      <button class="act-btn edit-btn" onclick="editCourse(${c.id})" title="تعديل">✏️</button>
+      <button class="act-btn del-btn" onclick="softDelete('courses',${c.id},'${c.name.replace(/'/g,"\\'")}')">✕</button>
+    </div>`:''}
+  </div>`;
+}
+
+function renderCourses(){
+  let courses = DB.get('courses');
+  document.getElementById('courseCount').textContent=`${courses.length} كورس`;
+  if(COURSE_FILTER!=='all') courses=courses.filter(c=>c.status===COURSE_FILTER);
+  const el = document.getElementById('courseList');
+  el.innerHTML = courses.length
+    ? courses.map(c=>renderCourseHTML(c)).join('')
+    : `<div class="empty"><div class="empty-icon">🎓</div><div class="empty-title">لا توجد كورسات</div><div class="empty-sub">أضف كورساتك التي تخطط لحضورها</div></div>`;
+}
+
+/* ================================================================
+   IDEAS
+   ================================================================ */
+const TAG_CLS = {فكرة:'b-med',ملاحظة:'b-cat',مشروع:'b-pur',قراءة:'b-low',تذكير:'b-high'};
+
+function saveIdea(){
+  const title=document.getElementById('ideaTitle').value.trim();
+  const text=document.getElementById('ideaText').value.trim();
+  if(!text&&!title){ showToast('⚠️ اكتب فكرتك أولاً'); return; }
+  const ideas=DB.get('ideas');
+  if(EDIT_IDEA_ID){
+    const i=ideas.find(i=>i.id===EDIT_IDEA_ID);
+    if(i){ i.title=title||'فكرة'; i.text=text; i.tag=document.getElementById('ideaTag').value; }
+    DB.set('ideas',ideas);
+    cancelIdeaEdit();
+    showToast('✏️ تم تحديث الفكرة');
+  } else {
+    ideas.unshift({
+      id:Date.now(), title:title||'فكرة جديدة', text,
+      tag:document.getElementById('ideaTag').value,
+      date:new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'})
+    });
+    DB.set('ideas',ideas);
+    document.getElementById('ideaTitle').value='';
+    document.getElementById('ideaText').value='';
+    showToast('💡 تم حفظ الفكرة');
+  }
+  renderIdeas(); updateStats();
+}
+
+function editIdea(id){
+  const i=DB.get('ideas').find(i=>i.id===id);
+  if(!i) return;
+  EDIT_IDEA_ID=id;
+  document.getElementById('ideaTitle').value=i.title;
+  document.getElementById('ideaText').value=i.text;
+  document.getElementById('ideaTag').value=i.tag;
+  document.getElementById('ideaFormTitle').textContent='✏️ تعديل الفكرة';
+  document.getElementById('ideaSaveBtn').textContent='تحديث ✓';
+  document.getElementById('ideaCancelBtn').style.display='block';
+  document.getElementById('ideaTitle').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelIdeaEdit(){
+  EDIT_IDEA_ID=null;
+  document.getElementById('ideaTitle').value='';
+  document.getElementById('ideaText').value='';
+  document.getElementById('ideaFormTitle').textContent='💭 فكرة جديدة';
+  document.getElementById('ideaSaveBtn').textContent='حفظ الفكرة ✓';
+  document.getElementById('ideaCancelBtn').style.display='none';
+}
+
+function ideaToTask(id){
+  const i=DB.get('ideas').find(i=>i.id===id);
+  if(!i) return;
+  const tasks=DB.get('tasks');
+  tasks.unshift({
+    id:Date.now(), title:i.title+(i.text?' — '+i.text.slice(0,40):''),
+    priority:'medium', category:'شخصي', date:'', goalId:'',
+    done:false, doneAt:null, created:new Date().toLocaleDateString('ar-SA')
+  });
+  DB.set('tasks',tasks);
+  updateStats();
+  showToast('✅ تم تحويل الفكرة إلى مهمة!');
+  switchPage('tasks');
+}
+
+function renderIdeas(search=''){
+  let ideas=DB.get('ideas');
+  const devPage = document.getElementById('page-develop');
+  if(!devPage.classList.contains('active') && search==='') return;
+  if(search) ideas=ideas.filter(i=>i.title.includes(search)||i.text.includes(search));
+  const el=document.getElementById('ideaList');
+  el.innerHTML=ideas.length
+    ?ideas.map(i=>`
+      <div class="idea-item">
+        <div class="idea-hdr">
+          <div class="idea-title">${i.title}</div>
+          <div class="idea-actions">
+            <button class="act-btn edit-btn" onclick="editIdea(${i.id})">✏️</button>
+            <button class="act-btn del-btn" onclick="softDelete('ideas',${i.id},'${i.title.replace(/'/g,"\\'")}')">✕</button>
+          </div>
+        </div>
+        ${i.text?`<div class="idea-text">${i.text}</div>`:''}
+        <div class="idea-ftr">
+          <span class="idea-date">${i.date}</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span class="badge ${TAG_CLS[i.tag]||'b-cat'}">${i.tag}</span>
+            <button class="convert-btn" onclick="ideaToTask(${i.id})">→ مهمة</button>
+          </div>
+        </div>
+      </div>`).join('')
+    :`<div class="empty"><div class="empty-icon">💡</div><div class="empty-title">${search?'لا نتائج':'لا توجد أفكار'}</div><div class="empty-sub">التقط أفكارك قبل أن تنساها</div></div>`;
+}
+
+/* ================================================================
+   GOALS
+   ================================================================ */
+const CAT_ICON={أكاديمي:'🎓',مهني:'💼',شخصي:'👤',مالي:'💰',صحي:'💪'};
+
+function saveGoal(){
+  const title=document.getElementById('goalTitle').value.trim();
+  if(!title){ showToast('⚠️ اكتب هدفك'); return; }
+  const goals=DB.get('goals');
+  if(EDIT_GOAL_ID){
+    const g=goals.find(g=>g.id===EDIT_GOAL_ID);
+    if(g){
+      g.title=title; g.desc=document.getElementById('goalDesc').value.trim();
+      g.category=document.getElementById('goalCategory').value;
+      g.deadline=document.getElementById('goalDeadline').value;
+    }
+    DB.set('goals',goals);
+    cancelGoalEdit();
+    showToast('✏️ تم تحديث الهدف');
+  } else {
+    goals.unshift({
+      id:Date.now(), title,
+      desc:document.getElementById('goalDesc').value.trim(),
+      category:document.getElementById('goalCategory').value,
+      deadline:document.getElementById('goalDeadline').value,
+      progress:0,
+    });
+    DB.set('goals',goals);
+    ['goalTitle','goalDesc'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('goalDeadline').value='';
+    document.getElementById('goalDeadline').type='text';
+    showToast('🎯 تم إضافة الهدف');
+  }
+  renderGoals(); updateStats(); populateGoalDropdown();
+}
+
+function editGoal(id){
+  const g=DB.get('goals').find(g=>g.id===id);
+  if(!g) return;
+  EDIT_GOAL_ID=id;
+  document.getElementById('goalTitle').value=g.title;
+  document.getElementById('goalDesc').value=g.desc||'';
+  document.getElementById('goalCategory').value=g.category;
+  if(g.deadline){ document.getElementById('goalDeadline').type='date'; document.getElementById('goalDeadline').value=g.deadline; }
+  document.getElementById('goalFormTitle').textContent='✏️ تعديل الهدف';
+  document.getElementById('goalSaveBtn').textContent='تحديث ✓';
+  document.getElementById('goalCancelBtn').style.display='block';
+  document.getElementById('goalTitle').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelGoalEdit(){
+  EDIT_GOAL_ID=null;
+  ['goalTitle','goalDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('goalDeadline').value='';
+  document.getElementById('goalDeadline').type='text';
+  document.getElementById('goalFormTitle').textContent='🎯 هدف جديد';
+  document.getElementById('goalSaveBtn').textContent='إضافة الهدف ✓';
+  document.getElementById('goalCancelBtn').style.display='none';
+}
+
+function updateGoalProgress(id,val){
+  const goals=DB.get('goals');
+  const g=goals.find(g=>g.id===id);
+  if(g) g.progress=parseInt(val);
+  DB.set('goals',goals);
+  document.getElementById('gp-'+id).textContent=val+'%';
+}
+
+function renderGoals(){
+  const goals=DB.get('goals');
+  const allTasks=DB.get('tasks');
+  const el=document.getElementById('goalList');
+  el.innerHTML=goals.length
+    ?goals.map(g=>{
+      const linked=allTasks.filter(t=>String(t.goalId)===String(g.id));
+      const linkedDone=linked.filter(t=>t.done).length;
+      return `<div class="goal-item">
+        <div class="goal-hdr">
+          <div>
+            <div class="goal-title">${CAT_ICON[g.category]||'🎯'} ${g.title}</div>
+            ${g.deadline?`<div class="goal-dl">📅 ${g.deadline}</div>`:''}
+          </div>
+          <div style="display:flex;gap:4px">
+            <button class="act-btn edit-btn" onclick="editGoal(${g.id})">✏️</button>
+            <button class="act-btn del-btn" onclick="softDelete('goals',${g.id},'${g.title.replace(/'/g,"\\'")}')">✕</button>
+          </div>
+        </div>
+        ${g.desc?`<div class="goal-desc">${g.desc}</div>`:''}
+        <div class="goal-prog-row">
+          <span class="goal-pct" id="gp-${g.id}">${g.progress}%</span>
+          <input type="range" min="0" max="100" value="${g.progress}" oninput="updateGoalProgress(${g.id},this.value)"/>
+        </div>
+        ${linked.length?`<div class="goal-tasks-count">📋 ${linked.length} مهمة مرتبطة · ${linkedDone} مكتملة</div>`:''}
+      </div>`;
+    }).join('')
+    :`<div class="empty"><div class="empty-icon">🎯</div><div class="empty-title">لا توجد أهداف</div><div class="empty-sub">حدّد أهدافك الكبيرة وتابع تقدّمك</div></div>`;
+}
+
+/* ================================================================
+   ACHIEVEMENTS
+   ================================================================ */
+function renderAchievements(){
+  const done=DB.get('tasks').filter(t=>t.done);
+  document.getElementById('achCount').textContent=done.length;
+  const el=document.getElementById('achList');
+  el.innerHTML=done.length
+    ?done.map(t=>`
+      <div class="ach-item">
+        <div class="ach-check">✓</div>
+        <div class="ach-body">
+          <div class="ach-title">${t.title}</div>
+          <div class="ach-date">${t.doneAt||t.created}</div>
+        </div>
+        <span class="badge b-cat">${t.category}</span>
+      </div>`).join('')
+    :`<div class="empty"><div class="empty-icon">🏆</div><div class="empty-title">لا إنجازات بعد</div><div class="empty-sub">أكمل مهامك لتظهر هنا</div></div>`;
+}
+
+/* ================================================================
+   GLOBAL SEARCH
+   ================================================================ */
+function openSearch(){
+  openOverlay('searchOverlay');
+  setTimeout(()=>document.getElementById('searchModalInput').focus(),300);
+}
+
+function doSearch(q){
+  const el=document.getElementById('searchResults');
+  if(!q.trim()){ el.innerHTML=`<div class="empty" style="padding:16px"><div class="empty-icon" style="font-size:28px">🔍</div><div class="empty-sub">ابدأ الكتابة للبحث</div></div>`; return; }
+  const results = [];
+  DB.get('tasks').filter(t=>t.title.includes(q)).forEach(t=>results.push({type:'tasks',label:'مهمة',icon:'📋',title:t.title,sub:t.category,color:'var(--accent)'}));
+  DB.get('courses').filter(c=>c.name.includes(q)||c.instructor?.includes(q)).forEach(c=>results.push({type:'courses',label:'كورس',icon:'🎓',title:c.name,sub:c.platform,color:'var(--blue)'}));
+  DB.get('ideas').filter(i=>i.title.includes(q)||i.text.includes(q)).forEach(i=>results.push({type:'ideas',label:'فكرة',icon:'💡',title:i.title,sub:i.tag,color:'var(--yel)'}));
+  DB.get('goals').filter(g=>g.title.includes(q)||g.desc?.includes(q)).forEach(g=>results.push({type:'goals',label:'هدف',icon:'🎯',title:g.title,sub:g.category,color:'var(--pur)'}));
+
+  if(!results.length){ el.innerHTML=`<div class="empty" style="padding:16px"><div class="empty-icon" style="font-size:28px">😔</div><div class="empty-title">لا نتائج</div><div class="empty-sub">جرّب كلمة مختلفة</div></div>`; return; }
+
+  const pageNav={tasks:'tasks',courses:'courses',ideas:'develop',goals:'develop'};
+  el.innerHTML=results.map(r=>`
+    <div class="search-result" onclick="closeOverlay('searchOverlay');switchPage('${pageNav[r.type]}')${r.type==='ideas'?";switchDev('ideas')":r.type==='goals'?";switchDev('goals')":''}" >
+      <div style="float:left;font-size:10px;background:var(--bg-card);color:var(--txm);padding:2px 6px;border-radius:99px;margin-bottom:2px">${r.label}</div>
+      <div class="sr-title" style="clear:both">${r.icon} ${r.title}</div>
+      <div class="sr-sub">${r.sub}</div>
+    </div>`).join('');
+}
+
+/* ================================================================
+   POMODORO
+   ================================================================ */
+let POMO = { interval:null, seconds:25*60, total:25*60, running:false, taskId:null, sessions:0, mode:'focus' };
+
+function openPomodoro(taskId=null){
+  const t = taskId ? DB.get('tasks').find(t=>t.id===taskId) : null;
+  POMO.taskId = taskId;
+  document.getElementById('pomoTaskName').textContent = t ? `📋 ${t.title}` : 'لم تُحدَّد مهمة';
+  updatePomodoroDisplay();
+  openOverlay('pomoOverlay');
+}
+
+function togglePomodoro(){
+  if(POMO.running){ pausePomodoro(); }
+  else { startPomodoro(); }
+}
+
+function startPomodoro(){
+  POMO.running=true;
+  document.getElementById('pomoPlayBtn').textContent='⏸ إيقاف مؤقت';
+  POMO.interval=setInterval(()=>{
+    POMO.seconds--;
+    updatePomodoroDisplay();
+    if(POMO.seconds<=0){
+      clearInterval(POMO.interval);
+      POMO.running=false;
+      POMO.sessions++;
+      document.getElementById('pomoPlayBtn').textContent='▶ ابدأ';
+      document.getElementById('pomoSessions').textContent=`جلسات اليوم: ${POMO.sessions} 🍅`;
+      if('Notification' in window && Notification.permission==='granted'){
+        new Notification('مخطط AdVax',{body: POMO.mode==='focus'?'🎉 انتهت جلسة التركيز! خذ استراحة.':'☕ انتهت الاستراحة، العودة للعمل!',icon:'./icon.svg'});
+      }
+      showToast(POMO.mode==='focus'?'🎉 أحسنت! انتهت جلسة التركيز':'☕ انتهت الاستراحة');
+      POMO.seconds = POMO.total;
+      updatePomodoroDisplay();
+    }
+  },1000);
+}
+
+function pausePomodoro(){
+  clearInterval(POMO.interval);
+  POMO.running=false;
+  document.getElementById('pomoPlayBtn').textContent='▶ متابعة';
+}
+
+function resetPomodoro(){
+  clearInterval(POMO.interval);
+  POMO.running=false;
+  POMO.seconds=POMO.total;
+  document.getElementById('pomoPlayBtn').textContent='▶ ابدأ';
+  updatePomodoroDisplay();
+}
+
+function switchPomoMode(){
+  resetPomodoro();
+  if(POMO.mode==='focus'){
+    POMO.mode='break'; POMO.total=5*60; POMO.seconds=5*60;
+    document.getElementById('pomoModeBtn').textContent='🎯 تركيز';
+  } else {
+    POMO.mode='focus'; POMO.total=25*60; POMO.seconds=25*60;
+    document.getElementById('pomoModeBtn').textContent='☕ استراحة';
+  }
+  updatePomodoroDisplay();
+}
+
+function updatePomodoroDisplay(){
+  const m=Math.floor(POMO.seconds/60).toString().padStart(2,'0');
+  const s=(POMO.seconds%60).toString().padStart(2,'0');
+  document.getElementById('pomoDisplay').textContent=`${m}:${s}`;
+  const pct = POMO.seconds/POMO.total;
+  const C=2*Math.PI*52;
+  const offset=C*pct;
+  const circle=document.getElementById('pomoRingCircle');
+  if(circle){
+    circle.style.strokeDashoffset=offset;
+    circle.style.stroke=POMO.mode==='break'?'var(--blue)':'var(--accent)';
+  }
+  const disp=document.getElementById('pomoDisplay');
+  if(disp) disp.classList.toggle('urgent', POMO.seconds<=60&&POMO.running);
+}
+
+/* ================================================================
+   NOTIFICATIONS
+   ================================================================ */
+async function requestNotifications(){
+  DB.setVal('notifAsked','1');
+  document.getElementById('notifBanner').style.display='none';
+  if(!('Notification' in window)){ showToast('⚠️ المتصفح لا يدعم الإشعارات'); return; }
+  const p = await Notification.requestPermission();
+  if(p==='granted'){
+    showToast('🔔 تم تفعيل الإشعارات');
+    new Notification('مخطط AdVax',{body:'مرحباً! سنذكّرك بمهامك 🎯',icon:'./icon.svg'});
+  } else {
+    showToast('❌ لم يتم تفعيل الإشعارات');
+  }
+}
+
+function checkDueTasks(){
+  if(Notification.permission!=='granted') return;
+  const today=new Date().toISOString().split('T')[0];
+  const due=DB.get('tasks').filter(t=>!t.done&&t.date===today);
+  if(due.length>0){
+    new Notification('مخطط AdVax — تذكير',{
+      body:`لديك ${due.length} مهمة اليوم: ${due[0].title}`,
+      icon:'./icon.svg'
+    });
+  }
+}
+
+/* ================================================================
+   EXPORT / IMPORT
+   ================================================================ */
+function exportData(){
+  const data={tasks:DB.get('tasks'),courses:DB.get('courses'),ideas:DB.get('ideas'),goals:DB.get('goals'),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`advax-backup-${new Date().toLocaleDateString('en-CA')}.json`;
+  a.click();
+  DB.setVal('lastExport',Date.now().toString());
+  showToast('💾 تم تصدير بياناتك بنجاح');
+}
+
+function importData(input){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.tasks) DB.set('tasks',data.tasks);
+      if(data.courses) DB.set('courses',data.courses);
+      if(data.ideas) DB.set('ideas',data.ideas);
+      if(data.goals) DB.set('goals',data.goals);
+      renderDashboard(); renderTasks(); renderCourses();
+      showToast('📥 تم استيراد البيانات بنجاح!');
+    } catch(err){ showToast('❌ ملف غير صالح'); }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+/* ================================================================
+   MODALS
+   ================================================================ */
+function openOverlay(id){ document.getElementById(id).classList.add('open'); }
+function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(ov=>{
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('open'); });
+});
+
+/* ================================================================
+   ONBOARDING
+   ================================================================ */
+let obStep=0;
+function obNav(dir){
+  obStep=Math.max(0,Math.min(2,obStep+dir));
+  document.querySelectorAll('.ob-slide').forEach((s,i)=>s.classList.toggle('active',i===obStep));
+  document.querySelectorAll('.ob-dot').forEach((d,i)=>d.classList.toggle('active',i===obStep));
+  document.getElementById('obPrev').style.display=obStep>0?'block':'none';
+  document.getElementById('obNext').style.display=obStep<2?'block':'none';
+}
+function finishOnboarding(){
+  DB.setVal('onboarded','1');
+  document.getElementById('obOverlay').style.display='none';
+}
+function initOnboarding(){
+  if(DB.getVal('onboarded')){
+    document.getElementById('obOverlay').style.display='none';
+  }
+}
+
+/* ================================================================
+   PWA INSTALL
+   ================================================================ */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('installBanner').classList.add('show');
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  if(outcome==='accepted'){ document.getElementById('installBanner').classList.remove('show'); showToast('🎉 تم تثبيت التطبيق!'); }
+  deferredPrompt=null;
+});
+
+/* ================================================================
+   KEYBOARD
+   ================================================================ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+  }
+});
+
+/* ================================================================
+   INIT
+   ================================================================ */
+initOnboarding();
+renderDashboard();
+renderTasks();
+renderCourses();
+
+// Check due tasks every hour
+if('Notification' in window) {
+  checkDueTasks();
+  setInterval(checkDueTasks, 60*60*1000);
+}
+</script>
+</body>
+</html>

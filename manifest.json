@@ -1,0 +1,50 @@
+{
+  "name": "مخطط AdVax v2 — نظّم حياتك",
+  "short_name": "مخطط AdVax",
+  "description": "تطبيق لتنظيم المهام والكورسات والأفكار والأهداف - من إنتاج AdVax",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["productivity", "education", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "إضافة مهمة",
+      "short_name": "مهمة جديدة",
+      "description": "انتقل مباشرة إلى صفحة المهام",
+      "url": "./index.html#tasks",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "إضافة فكرة",
+      "short_name": "فكرة جديدة",
+      "description": "احفظ فكرة جديدة بسرعة",
+      "url": "./index.html#ideas",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
