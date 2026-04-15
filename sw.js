@@ -5,7 +5,7 @@
  * ================================================================
  */
 
-const CACHE_NAME = 'advax-planner-v1.0.0';
+const CACHE_NAME = 'advax-planner-v3.0.0';
 
 // الملفات التي سيتم تخزينها مؤقتاً للعمل Offline
 const ASSETS_TO_CACHE = [
